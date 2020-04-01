@@ -5,10 +5,15 @@ window.addEventListener('keydown', ((evt) => {
       var [motionState, direction] = positionVariation(heldMvtKeys);
       hero.setMotionState(motionState);
       hero.setDirection(direction);
+  // } else if (evt.key == 'm' && hero.speed != hero.sprintSpeed) {
+  //   hero.sprintOn();
     }
-  } else if (evt.key == 'm' && hero.speed != hero.sprintSpeed) {
-    hero.sprintOn();
+  } else if (evt.key == ' ') {
+      hero.dash();
+  } else if (evt.key == 'c') {
+      hero.loseHp(25);
   }
+  // console.log(heldMvtKeys, hero.direction);
 }));
 
 window.addEventListener('keyup', ((evt) => {
@@ -17,13 +22,14 @@ window.addEventListener('keyup', ((evt) => {
     if (heldMvtKeys.length == 0) {
       hero.setMotionState('resting');
     } else {
-      var [motionState, direction] = positionVariation(heldMvtKeys);
+      const [motionState, direction] = positionVariation(heldMvtKeys);
       hero.setMotionState(motionState);
       hero.setDirection(direction);
     }
-  } else if (evt.key == 'm' && hero.speed != 0) {
-    hero.sprintOff();
   }
+  // } else if (evt.key == 'm' && hero.speed != 0) {
+  //   hero.sprintOff();
+  // }
 }));
 
 let heldMvtKeys = [];
@@ -68,15 +74,19 @@ function positionVariation(heldMvtKeysArray) {
         direction = 'SW';
       } else {
         motionState = 'resting';
-        switch(a) {
+        switch(b) {
           case 'w':
             direction = 'N';
+            break;
           case 's':
             direction = 'S';
+            break;
           case 'a':
             direction = 'W';
+            break;
           case 'd':
             direction = 'E';
+            break;
         }
       }
       break;
@@ -87,7 +97,7 @@ function positionVariation(heldMvtKeysArray) {
         direction = 'N';
       } else if (!heldMvtKeysArray.includes('w')) {
         direction = 'S';
-      } else if (!heldMvtKeysArray.includes('d')) {
+      } else if (!heldMvtKeysArray.includes('d')) {// those two last do not work
         direction = 'W';
       } else if (!heldMvtKeysArray.includes('a')) {
         direction = 'E';
