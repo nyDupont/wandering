@@ -1,19 +1,21 @@
 window.addEventListener('keydown', ((evt) => {
   if (['w', 'a', 's', 'd'].includes(evt.key)) {
     if (!heldMvtKeys.includes(evt.key)) {
+
       heldMvtKeys.push(evt.key);
-      var [motionState, direction] = positionVariation(heldMvtKeys);
+      const [motionState, direction] = positionVariation(heldMvtKeys);
       hero.setMotionState(motionState);
       hero.setDirection(direction);
   // } else if (evt.key == 'm' && hero.speed != hero.sprintSpeed) {
   //   hero.sprintOn();
     }
   } else if (evt.key == ' ') {
-      hero.dash();
+      if (!hero.isDashing) {
+        hero.swirl();
+      }
   } else if (evt.key == 'c') {
-      hero.loseHp(25);
+      hero.loseHp(5);
   }
-  // console.log(heldMvtKeys, hero.direction);
 }));
 
 window.addEventListener('keyup', ((evt) => {

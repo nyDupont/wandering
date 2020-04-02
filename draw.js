@@ -1,7 +1,10 @@
 const refreshSpeed = 0;
 map = new Map(2, 2, 1, 0);
 hero = new Hero();
-statBar = new StatBar();
+// hero2 = new Hero()
+mainStatBar = new StatBar(hero, true);
+swirlStateDisplayer = new AbilityStateDisplayer('swirl', hero, 1);
+// statBar2 = new StatBar(hero2, false);
 // var integerUpdateState10milli = 100;
 var integerUpdateState20milli = -20;
 var integerUpdateState100milli = -20;
@@ -16,9 +19,13 @@ var integerUpdateState100milli = -20;
     //   // console.log(integerUpdateState10milli);
     // };
     if (Math.abs(integerUpdateState20milli - d1.getMilliseconds()) > 20) {
-      map.draw();
+      // console.log('yo');
+      map.draw(); // drawn first as it clears the canvas
       hero.update();
-      statBar.draw();
+      // hero2.update();
+      mainStatBar.draw();
+      swirlStateDisplayer.update();
+      // statBar2.draw();
       integerUpdateState20milli = d1.getMilliseconds();
     };
     if (Math.abs(integerUpdateState100milli - d1.getMilliseconds()) > 100) {

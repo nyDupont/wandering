@@ -1,136 +1,50 @@
-function Hero() {
-  // Attributes:
-  this.maxHp = 100;
-  this.timeBeforeHpHealing = 2; // seconds
-  this.hpHealingSpeed = 1;
-  this.maxMana = 30;
-  this.timeBeforeManaHealing = 3; // seconds
-  this.manaHealingSpeed = 0.5;
-  this.walkSpeed = 8;
-  this.sprintSpeed = 8;
-  this.dashRange = 200;
-  this.normalSize = 100;
+class Hero extends Belligerent {
+  constructor() {
+    super();
+    // health
+    this.maxHp = 50;
+    this.hp = this.maxHp;
+    this.timeBeforeHpHealing = 2; // seconds
+    this.hpHealingSpeed = 0.2;
 
-  // presentAttributes:
-  this.x = canvas.width/2;
-  this.y = canvas.height/2;
-  this.size = this.normalSize;
-  this.hp = this.maxHp;
-  this.mana = this.maxMana;
-  this.lastHpLossTime;
-  this.lastManaLossTime;
-  this.speed = this.walkSpeed;
-  this.isMoving = false;
-  this.direction = 'S';
-  this.image = new Image();
-  this.animatedImageIndex = 0;
-  this.image.src = 'images/fox_' + this.direction[this.direction.length-1] +
-                   '_' + this.animatedImageIndex.toString() + '.svg';
+    // mana
+    this.maxMana = 10;
+    this.mana = this.maxMana;
+    this.timeBeforeManaHealing = 3; // seconds
+    this.manaHealingSpeed = 0.1;
 
-  this.update = function() {
-    this.setPosition();
-    this.statRecover();
-    this.draw();
-  };
+    // situational
+    this.y = canvas.height/2;
+    this.x = canvas.width/2;
+    this.direction = 'S';
+    this.isMoving = false;
 
-  this.draw = function() {
-    // console.log(this.isMoving);
-    ctx.drawImage(this.image,
-                  Math.round(this.x-this.size/2), Math.round(this.y-this.size/2),
-                  Math.round(this.size), Math.round(this.size));
-    // if (this.isMoving) {
-    //   this.walkingAnimationUpdate()
-    // }
-  };
-
-  this.setDirection = function(direction) {
-    this.direction = direction;
-    // console.log(this.direction);
+    // physical
+    this.walkSpeed = 8;
+    this.runSpeed = 10;
+    this.speed = this.walkSpeed;
+    this.normalSize = 100;
+    this.size = this.normalSize;
+    this.imageSrcName = 'fox';
     this.setImage(this.direction, this.animatedImageIndex);
-  };
 
-  this.setImage = function(direction, animatedImageIndex) {
-    // console.log(this.direction, this.animatedImageIndex);
-    this.image.src = 'images/fox_' + direction[direction.length-1] +
-                     '_' + animatedImageIndex.toString() + '.svg';
-  };
+    // abilities attributes
+    this.swirlRange = 200;
+    this.swirlManaCost = 2;
+    this.isDashing = false;
+    this.swirlCD = 2; // seconds
+    this.lastSwirlTime = new Date();
+    this.lastSwirlTime.setSeconds(-this.swirlCD);
+  }
 
-  this.walkingAnimationUpdate = function() {
-    if (this.isMoving) {
-      this.animatedImageIndex = (this.animatedImageIndex+1)%4;
-      this.setImage(this.direction, this.animatedImageIndex);
-    }
-  };
+  update() {
+    this.setPosition();
+    this.checkMap();
+    this.statRecOverTime();
+    this.draw();
+  }
 
-  this.setMotionState = function(state) {
-    if (state == 'moving') {
-      this.isMoving = true;
-    } else {
-      this.isMoving = false;
-    }
-  };
-
-  this.setPosition = function() {
-    if (this.isMoving) {
-      const ok2goN = map.i >= 0 && this.y >= 0;
-      const ok2goS = map.i <= map.i_max && this.y < canvas.height;
-      const ok2goE = map.j <= map.j_max && this.x < canvas.width;
-      const ok2goW = map.j >= 0 && this.x >= 0;
-      switch(this.direction) {
-        case 'N':
-          if (ok2goN) {
-            this.y -= this.speed;
-          };
-          break;
-        case 'S':
-          if (ok2goS) {
-            this.y += this.speed;
-          };
-          break;
-        case 'W':
-          if (ok2goW) {
-            this.x -= this.speed;
-          };
-          break;
-        case 'E':
-          if (ok2goE) {
-            this.x += this.speed;
-          };
-          break;
-        case 'NW':
-          if (ok2goN) {
-            this.y -= this.speed/Math.sqrt(2);
-          };
-          if (ok2goW) {
-            this.x -= this.speed/Math.sqrt(2);
-          };
-          break;
-        case 'NE':
-          if (ok2goN) {
-            this.y -= this.speed/Math.sqrt(2);
-          };
-          if (ok2goE) {
-            this.x += this.speed/Math.sqrt(2);
-          };
-          break;
-        case 'SW':
-          if (ok2goS) {
-            this.y += this.speed/Math.sqrt(2);
-          };
-          if (ok2goW) {
-            this.x -= this.speed/Math.sqrt(2);
-          };
-          break;
-        case 'SE':
-          if (ok2goS) {
-            this.y += this.speed/Math.sqrt(2);
-          };
-          if (ok2goE) {
-            this.x += this.speed/Math.sqrt(2);
-          };
-          break;
-      }
-    }
+  checkMap() {
     if (this.x >= canvas.width && map.j < map.j_max) {
       this.x = 0;
       map.setCoords(map.i, map.j+1);
@@ -147,186 +61,143 @@ function Hero() {
       this.y = canvas.height-1;
       map.setCoords(map.i-1, map.j);
     }
-    // this.x = Math.round(this.x);
-    // this.y = Math.round(this.y);
   }
 
-  this.loseHp = function(hpLoss) {
-    this.lastHpLossTime = new Date()
-    if (this.hp < hpLoss) {
-      this.hp = 0;
-    } else {
-      this.hp -= hpLoss;
-    };
-  }
-
-  this.loseMana = function(manaLoss) {
-    if (this.mana >= manaLoss) {
-      this.lastManaLossTime = new Date();
-      this.mana -= manaLoss;
+  checkCD(abilityCD, lastAbilityTime) {
+    let d1 = new Date();
+    d1 = d1.getMinutes()*60 + d1.getSeconds();
+    let d2 = lastAbilityTime.getMinutes()*60 + lastAbilityTime.getSeconds();
+    if (Math.abs(d1-d2) >= abilityCD) {
       return true;
-    }  else {
+    } else {
       return false;
-    };
-  }
-
-  this.statRecover = function() {
-    if (this.hp < this.maxHp) {
-      let d1 = new Date();
-      d1 = d1.getMinutes()*60+d1.getSeconds();
-      d2 = this.lastHpLossTime.getMinutes()*60+this.lastHpLossTime.getSeconds();
-      if (Math.abs(d1-d2) > this.timeBeforeHpHealing) {
-        this.hp += this.hpHealingSpeed;
-      }
-    };
-
-    if (this.mana < this.maxMana) {
-      let d1 = new Date();
-      d1 = d1.getMinutes()*60+d1.getSeconds();
-      d2 = this.lastManaLossTime.getMinutes()*60+this.lastManaLossTime.getSeconds();
-      if (Math.abs(d1-d2) > this.timeBeforeManaHealing) {
-        this.mana += this.manaHealingSpeed;
-      }
-    };
-  }
-
-
-  this.sprintOn = function() {
-    this.speed = this.sprintSpeed;
-  }
-
-  this.sprintOff = function() {
-    this.speed = this.walkSpeed;
-  }
-
-  this.dash = function() {
-    const dashManaCost = 10;
-    const msBetweenFrames = 30;
-    const notOk2dashN = map.i == 0 && this.y < this.dashRange;
-    const notOk2dashS = map.i == map.i_max && this.y >= canvas.height-this.dashRange;
-    const notOk2dashE = map.j == map.j_max && this.x >= canvas.width-this.dashRange;
-    const notOk2dashW = map.j == 0 && this.x < this.dashRange;
-
-    if (this.direction == 'N' && !notOk2dashN) {
-      // loseMana both test if hero has enought mana and if so makes him lose
-      // the according amount.
-        if (this.loseMana(dashManaCost)) {
-          this.dashAnimation(this.y-this.dashRange, this.x, msBetweenFrames);
-        }
-    } else if (this.direction == 'S' && !notOk2dashS) {
-        if (this.loseMana(dashManaCost)) {
-        this.dashAnimation(this.y+this.dashRange, this.x, msBetweenFrames);
-        }
-    } else if (this.direction == 'E' && !notOk2dashE) {
-        if (this.loseMana(dashManaCost)) {
-          this.dashAnimation(this.y, this.x+this.dashRange, msBetweenFrames);
-        }
-    } else if (this.direction == 'W' && !notOk2dashW) {
-        if (this.loseMana(dashManaCost)) {
-          this.dashAnimation(this.y, this.x-this.dashRange, msBetweenFrames);
-        }
-    } else if (this.direction == 'SE') {
-        if (!notOk2dashS && !notOk2dashE) {
-          if (this.loseMana(dashManaCost)) {
-            this.dashAnimation(this.y+this.dashRange/Math.sqrt(2),
-                               this.x+this.dashRange/Math.sqrt(2), msBetweenFrames);
-          }
-        } else if (!notOk2dashS) {
-          if (this.loseMana(dashManaCost)) {
-            this.dashAnimation(this.y+this.dashRange/Math.sqrt(2), this.x,
-                               msBetweenFrames);
-          }
-        } else if (!notOk2dashE) {
-          if (this.loseMana(dashManaCost)) {
-            this.dashAnimation(this.y, this.x+this.dashRange/Math.sqrt(2),
-                               msBetweenFrames);
-          }
-        }
-    } else if (this.direction == 'SW') {
-        if (!notOk2dashS && !notOk2dashW) {
-          if (this.loseMana(dashManaCost)) {
-            this.dashAnimation(this.y+this.dashRange/Math.sqrt(2),
-                               this.x-this.dashRange/Math.sqrt(2), msBetweenFrames);
-          }
-        } else if (!notOk2dashS) {
-          if (this.loseMana(dashManaCost)) {
-            this.dashAnimation(this.y+this.dashRange/Math.sqrt(2), this.x,
-                               msBetweenFrames);
-          }
-        } else if (!notOk2dashW) {
-          if (this.loseMana(dashManaCost)) {
-            this.dashAnimation(this.y, this.x-this.dashRange/Math.sqrt(2),
-                               msBetweenFrames);
-          }
-        }
-    } else if (this.direction == 'NE') {
-        if (!notOk2dashN && !notOk2dashE) {
-          if (this.loseMana(dashManaCost)) {
-            this.dashAnimation(this.y-this.dashRange/Math.sqrt(2),
-                               this.x+this.dashRange/Math.sqrt(2), msBetweenFrames);
-          }
-        } else if (!notOk2dashN) {
-          if (this.loseMana(dashManaCost)) {
-            this.dashAnimation(this.y-this.dashRange/Math.sqrt(2), this.x,
-                               msBetweenFrames);
-          }
-        } else if (!notOk2dashE) {
-          if (this.loseMana(dashManaCost)) {
-            this.dashAnimation(this.y, this.x+this.dashRange/Math.sqrt(2),
-                               msBetweenFrames);
-          }
-        }
-    } else if (this.direction == 'NW') {
-        if (!notOk2dashN && !notOk2dashW) {
-          if (this.loseMana(dashManaCost)) {
-            this.dashAnimation(this.y-this.dashRange/Math.sqrt(2),
-                               this.x-this.dashRange/Math.sqrt(2), msBetweenFrames);
-          }
-        } else if (!notOk2dashN) {
-          if (this.loseMana(dashManaCost)) {
-            this.dashAnimation(this.y-this.dashRange/Math.sqrt(2), this.x,
-                               msBetweenFrames);
-          }
-        } else if (!notOk2dashW) {
-          if (this.loseMana(dashManaCost)) {
-            this.dashAnimation(this.y, this.x-this.dashRange/Math.sqrt(2),
-                               msBetweenFrames);
-          }
-        }
     }
   }
 
-  this.dashAnimation = async function(newY, newX, msBetweenFrames) {
-    let direction = this.direction;
-    const nbOfFrames = 12;
-    for (var i=0; i<nbOfFrames; i++) {
-      if (i == Math.round(nbOfFrames/2)) {
-        this.x = newX;
-        this.y = newY;
-      };
-      this.size = this.normalSize*Math.abs(i-nbOfFrames/2)*2/nbOfFrames;
-      direction = clockWiseDirectionPermutation(direction[this.direction.length-1]);
-      this.setImage(direction, 0);
-      this.draw();
-      await new Promise(r => setTimeout(r, msBetweenFrames));
-    };
+  swirl() {
+    if (this.checkCD(this.swirlCD, this.lastSwirlTime)) {
+      const msBetweenFrames = 30;
+      const notOk2swirlN = map.i == 0 && this.y < this.swirlRange;
+      const notOk2swirlS = map.i == map.i_max && this.y >= canvas.height-this.swirlRange;
+      const notOk2swirlE = map.j == map.j_max && this.x >= canvas.width-this.swirlRange;
+      const notOk2swirlW = map.j == 0 && this.x < this.swirlRange;
+
+      if (this.direction == 'N' && !notOk2swirlN) {
+        // loseMana both test if hero has enought mana and if so makes him lose
+        // the according amount.
+          if (this.loseMana(this.swirlManaCost)) {
+            this.swirlAnimation(this.y-this.swirlRange, this.x, msBetweenFrames);
+          }
+      } else if (this.direction == 'S' && !notOk2swirlS) {
+          if (this.loseMana(this.swirlManaCost)) {
+          this.swirlAnimation(this.y+this.swirlRange, this.x, msBetweenFrames);
+          }
+      } else if (this.direction == 'E' && !notOk2swirlE) {
+          if (this.loseMana(this.swirlManaCost)) {
+            this.swirlAnimation(this.y, this.x+this.swirlRange, msBetweenFrames);
+          }
+      } else if (this.direction == 'W' && !notOk2swirlW) {
+          if (this.loseMana(this.swirlManaCost)) {
+            this.swirlAnimation(this.y, this.x-this.swirlRange, msBetweenFrames);
+          }
+      } else if (this.direction == 'SE') {
+          if (!notOk2swirlS && !notOk2swirlE) {
+            if (this.loseMana(this.swirlManaCost)) {
+              this.swirlAnimation(this.y+this.swirlRange/Math.sqrt(2),
+                                 this.x+this.swirlRange/Math.sqrt(2), msBetweenFrames);
+            }
+          } else if (!notOk2swirlS) {
+            if (this.loseMana(this.swirlManaCost)) {
+              this.swirlAnimation(this.y+this.swirlRange/Math.sqrt(2), this.x,
+                                 msBetweenFrames);
+            }
+          } else if (!notOk2swirlE) {
+            if (this.loseMana(this.swirlManaCost)) {
+              this.swirlAnimation(this.y, this.x+this.swirlRange/Math.sqrt(2),
+                                 msBetweenFrames);
+            }
+          }
+      } else if (this.direction == 'SW') {
+          if (!notOk2swirlS && !notOk2swirlW) {
+            if (this.loseMana(this.swirlManaCost)) {
+              this.swirlAnimation(this.y+this.swirlRange/Math.sqrt(2),
+                                 this.x-this.swirlRange/Math.sqrt(2), msBetweenFrames);
+            }
+          } else if (!notOk2swirlS) {
+            if (this.loseMana(this.swirlManaCost)) {
+              this.swirlAnimation(this.y+this.swirlRange/Math.sqrt(2), this.x,
+                                 msBetweenFrames);
+            }
+          } else if (!notOk2swirlW) {
+            if (this.loseMana(this.swirlManaCost)) {
+              this.swirlAnimation(this.y, this.x-this.swirlRange/Math.sqrt(2),
+                                 msBetweenFrames);
+            }
+          }
+      } else if (this.direction == 'NE') {
+          if (!notOk2swirlN && !notOk2swirlE) {
+            if (this.loseMana(this.swirlManaCost)) {
+              this.swirlAnimation(this.y-this.swirlRange/Math.sqrt(2),
+                                 this.x+this.swirlRange/Math.sqrt(2), msBetweenFrames);
+            }
+          } else if (!notOk2swirlN) {
+            if (this.loseMana(this.swirlManaCost)) {
+              this.swirlAnimation(this.y-this.swirlRange/Math.sqrt(2), this.x,
+                                 msBetweenFrames);
+            }
+          } else if (!notOk2swirlE) {
+            if (this.loseMana(this.swirlManaCost)) {
+              this.swirlAnimation(this.y, this.x+this.swirlRange/Math.sqrt(2),
+                                 msBetweenFrames);
+            }
+          }
+      } else if (this.direction == 'NW') {
+          if (!notOk2swirlN && !notOk2swirlW) {
+            if (this.loseMana(this.swirlManaCost)) {
+              this.swirlAnimation(this.y-this.swirlRange/Math.sqrt(2),
+                                 this.x-this.swirlRange/Math.sqrt(2), msBetweenFrames);
+            }
+          } else if (!notOk2swirlN) {
+            if (this.loseMana(this.swirlManaCost)) {
+              this.swirlAnimation(this.y-this.swirlRange/Math.sqrt(2), this.x,
+                                 msBetweenFrames);
+            }
+          } else if (!notOk2swirlW) {
+            if (this.loseMana(this.swirlManaCost)) {
+              this.swirlAnimation(this.y, this.x-this.swirlRange/Math.sqrt(2),
+                                 msBetweenFrames);
+            }
+          }
+        }
+      }
+    }
+
+    async swirlAnimation(newY, newX, msBetweenFrames) {
+      this.isDashing = true;
+      this.lastSwirlTime = new Date();
+      let direction = this.direction;
+      const nbOfFrames = 12;
+      for (var i=0; i<nbOfFrames; i++) {
+        if (i == Math.round(nbOfFrames/2)) {
+          this.x = newX;
+          this.y = newY;
+        }
+        this.size = this.normalSize*Math.abs(i-nbOfFrames/2)*2/nbOfFrames;
+        direction = this.clockWiseDirectionPermutation(direction[this.direction.length-1]);
+        this.setImage(direction, 0);
+        this.draw();
+        await new Promise(r => setTimeout(r, msBetweenFrames));
+        if (i == nbOfFrames - 1) {
+          this.isDashing = false;
+          this.size = this.normalSize;
+        }
+      }
   }
-  // this.randomizeColor = function () {
-  //   this.color = '#' + Math.round(Math.random()*Math.pow(16, 6)).toString(16);
-  // }
 
-  // this.eat = function(fruit) {
-  //   if (this.x === fruit.x && this.y === fruit.y) {
-  //     this.total ++;
-  //     return true;
-  //   }
-  //   return false;
-  // }
-}
-
-
-function clockWiseDirectionPermutation(direction) {
-  const clockWiseCardinals = ['N', 'E', 'S', 'W'];
-  return clockWiseCardinals[(clockWiseCardinals.indexOf(direction)+1)%
-                            clockWiseCardinals.length];
+  clockWiseDirectionPermutation(direction) {
+    // should it better be defined outside hero class definition?
+    const clockWiseCardinals = ['N', 'E', 'S', 'W'];
+    return clockWiseCardinals[(clockWiseCardinals.indexOf(direction)+1)%
+                              clockWiseCardinals.length];
+  }
 }
