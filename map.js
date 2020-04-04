@@ -9,15 +9,19 @@ function Map(i_max, j_max, i_init, j_init) {
   this.image = new Image();
   this.image.src = 'images/road_'+this.i.toString()+this.j.toString()+'.svg';
 
+  this.update = function() {
+    this.draw();
+  }
+
   this.draw = function() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.drawImage(this.image, 0, 0, canvas.width, canvas.height);
-  };
+  }
 
-  this.setCoords = function(i, j) {
-    this.i = i;
-    this.j = j;
+  this.setCoords = function(coords) {
+    this.i = coords[0];
+    this.j = coords[1];
     this.image.src = 'images/road_'+this.i.toString()+this.j.toString()+'.svg';
-  };
+  }
 
 }

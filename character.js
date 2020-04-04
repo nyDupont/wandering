@@ -9,9 +9,13 @@ class Character {
     this.image = new Image();
     this.imageSrcName;
     this.animatedImageIndex = 0;
+    this.possibleDirection = ['E', 'SE', 'S', 'SW', 'W', 'NW', 'N', 'NE'];
+    this.hitbox;
+    this.hitBoxDebug = false;
   }
 
   update() {
+    this.hitbox.update();
     this.setPosition();
     this.draw();
   }
@@ -21,6 +25,14 @@ class Character {
                   Math.round(this.x-this.size/2),
                   Math.round(this.y-this.size/2),
                   Math.round(this.size), Math.round(this.size));
+    if (this.hitBoxDebug) {
+      ctx.fillStyle = this.hitBoxDebug_fillStyleRGBa;
+      ctx.fillRect(Math.round(this.x-0.75*this.size/2),
+                   Math.round(this.y-0.9*this.size/2),
+                   Math.round(0.75*this.size), Math.round(0.9*this.size));
+    }
+
+
   }
 
   setDirection(direction) {

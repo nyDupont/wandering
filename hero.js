@@ -15,9 +15,10 @@ class Hero extends Belligerent {
 
     // situational
     this.y = canvas.height/2;
-    this.x = canvas.width/2;
+    this.x = 7*canvas.width/8;
     this.direction = 'S';
     this.isMoving = false;
+    this.mapCoords = [0, 1];
 
     // physical
     this.walkSpeed = 8;
@@ -28,8 +29,13 @@ class Hero extends Belligerent {
     this.imageSrcName = 'fox';
     this.setImage(this.direction, this.animatedImageIndex);
 
+    this.statBar = new StatBar(this, true);
+
+    this.hitbox = new TargetHitbox(this, 0.75*this.size, 0.9*this.size);
+    this.hitBoxDebug_fillStyleRGBa = 'rgba(0, 255, 0, 0.75)';
+
     // abilities attributes
-    this.swirlRange = 200;
+    this.swirlRange = 300;
     this.swirlManaCost = 2;
     this.isDashing = false;
     this.swirlCD = 2; // seconds
@@ -39,6 +45,8 @@ class Hero extends Belligerent {
 
   update() {
     this.setPosition();
+    this.hitbox.update();
+    this.statBar.update();
     this.checkMap();
     this.statRecOverTime();
     this.draw();
@@ -47,19 +55,23 @@ class Hero extends Belligerent {
   checkMap() {
     if (this.x >= canvas.width && map.j < map.j_max) {
       this.x = 0;
-      map.setCoords(map.i, map.j+1);
+      this.mapCoords = [this.mapCoords[0], this.mapCoords[1]+1];
+      map.setCoords(this.mapCoords);
     }
     if (this.x < 0 && map.j > 0) {
       this.x = canvas.width-1;
-      map.setCoords(map.i, map.j-1);
+      this.mapCoords = [this.mapCoords[0], this.mapCoords[1]-1];
+      map.setCoords(this.mapCoords);
     }
     if (this.y >= canvas.height && map.i < map.i_max) {
       this.y = 0;
-      map.setCoords(map.i+1, map.j);
+      this.mapCoords = [this.mapCoords[0]+1, this.mapCoords[1]];
+      map.setCoords(this.mapCoords);
     }
     if (this.y < 0 && map.i > 0) {
       this.y = canvas.height-1;
-      map.setCoords(map.i-1, map.j);
+      this.mapCoords = [this.mapCoords[0]-1, this.mapCoords[1]];
+      map.setCoords(this.mapCoords);
     }
   }
 

@@ -6,9 +6,9 @@ class AbilityStateDisplayer extends StateDisplayer {
       this.index = index;
       this.size = 40;
       this.hSpaceBetweenAbility = 20;
-      // this.y = mainStatBar.y - this.size/2 + mainStatBar.height + mainStatBar.vSpaceBetweenBars/2;
-      this.y = mainStatBar.y - 5
-      this.x = mainStatBar.x + 0.6*mainStatBar.width +
+      // this.y = hero.statBar.y - this.size/2 + hero.statBar.height + hero.statBar.vSpaceBetweenBars/2;
+      this.y = hero.statBar.y - 5
+      this.x = hero.statBar.x + 0.6*hero.statBar.width +
                (index-1)*(this.size+this.hSpaceBetweenAbility);
       this.image = new Image();
       this.imageSrcName = this.name;

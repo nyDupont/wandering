@@ -7,19 +7,33 @@
   <body>
     <!-- <canvas class="canvas" width="300" height="200" style="background-color:
     #3e7e3e; border: 1px solid"></canvas> -->
-    <canvas class="canvas" width="750" height="500"></canvas>
+    <canvas class="canvas" width="750" height="500"
+    onmousemove="movingMouse(event)"></canvas>
     <!-- <canvas class="canvas" style="border: 1px solid; width:200px; -->
     <!-- height: 200px; background-color:#3e7e3e"></canvas> -->
   </body>
+  <script type="text/javascript" src="hitbox.js"></script>
+  <script type="text/javascript" src="projectileHitbox.js"></script>
+  <script type="text/javascript" src="targetHitbox.js"></script>
+
   <script type="text/javascript" src="character.js"></script>
   <script type="text/javascript" src="belligerent.js"></script>
   <script type="text/javascript" src="hero.js"></script>
+  <script type="text/javascript" src="foe.js"></script>
+
+  <script type="text/javascript" src="projectile.js"></script>
+  <script type="text/javascript" src="rotatingProjectile.js"></script>
+  <script type="text/javascript" src="shurikenProjectile.js"></script>
+
   <script type="text/javascript" src="stateDisplayer.js"></script>
   <script type="text/javascript" src="statBar.js"></script>
   <script type="text/javascript" src="coolDownDisplayer.js"></script>
   <script type="text/javascript" src="abilityStateDisplayer.js"></script>
+  <script type="text/javascript" src="mire.js"></script>
+
   <script type="text/javascript" src="map.js"></script>
   <script type="text/javascript" src="draw.js"></script>
   <script type="text/javascript" src="jsEvents.js"></script>
-
+  <!-- <script onmousemove="myFunction(event)"></script> -->
+  <!-- <div onmousemove="myFunction(event)" onmouseout="clearCoor()"></div> -->
 </html>

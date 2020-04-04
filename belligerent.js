@@ -17,6 +17,8 @@ class Belligerent extends Character {
     this.walkSpeed;
     this.runSpeed;
     this.normalSize;
+
+    this.statBar;
   }
 
   update() {
@@ -25,10 +27,16 @@ class Belligerent extends Character {
     this.draw();
   }
 
+  death() {
+    listOfObjectsToUpdate.splice(listOfObjectsToUpdate.indexOf(this), 1);
+    this.hitbox.destruct();
+  }
+
   loseHp(hpLoss) {
     this.lastHpLossTime = new Date();
-    if (this.hp < hpLoss) {
+    if (this.hp <= hpLoss) {
       this.hp = 0;
+      this.death();
     } else {
       this.hp -= hpLoss;
     }

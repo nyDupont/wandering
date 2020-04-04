@@ -35,7 +35,6 @@ window.addEventListener('keyup', ((evt) => {
 }));
 
 let heldMvtKeys = [];
-
 function positionVariation(heldMvtKeysArray) {
   const len = heldMvtKeysArray.length;
   let motionState;
@@ -109,3 +108,30 @@ function positionVariation(heldMvtKeysArray) {
   }
   return [motionState, direction];
 };
+
+window.addEventListener('click', ((evt) => {
+    mouseHeroAngle = angleBetweenObj(evt.clientX, evt.clientY, hero.x, hero.y)
+    shuriken = new ShurikenProjectile(hero, mouseHeroAngle);
+    listOfObjectsToUpdate.push(shuriken);
+}));
+
+function movingMouse(evt) {
+  // console.log(e.clientX, e.clientY);
+  // ctx.fillStyle = '#ffffff'
+  // ctx.fillRect(evt.clientX, evt.clientY,
+  //              10, 10);
+  mainMire.setAngle(evt.clientX, evt.clientY);
+}
+
+function angleBetweenObj(bx, by, ax, ay) {
+  let dx = bx - ax;
+  if (dx == 0) { // handling dividing by zero in arctan
+    dx = 1;
+  }
+  const dy =  by - ay;
+  let angle = Math.atan(dy/dx);
+  if (dx < 0) {
+    angle += Math.PI;
+  }
+  return angle;
+}
