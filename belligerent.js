@@ -19,6 +19,8 @@ class Belligerent extends Character {
     this.normalSize;
 
     this.statBar;
+    this.fontHpLoss;
+    this.fontHealthColor;
   }
 
   update() {
@@ -34,6 +36,7 @@ class Belligerent extends Character {
 
   loseHp(hpLoss) {
     this.lastHpLossTime = new Date();
+    this.loseHpAnimation(hpLoss);
     if (this.hp <= hpLoss) {
       this.hp = 0;
       this.death();
@@ -75,6 +78,12 @@ class Belligerent extends Character {
     }
   }
 
+  knockBack(direction, amount) {
+    // console.log(direction, amount);
+    this.x += amount*Math.cos(direction);
+    this.y += amount*Math.sin(direction);
+  }
+
   sprint(str) {
     // str takes value ['On', 'Off']
     if (str == 'On') {
@@ -82,5 +91,17 @@ class Belligerent extends Character {
     } else if (str == 'Off') {
       this.speed = this.walkSpeed;
     }
+  }
+
+  loseHpAnimation(hpLoss) {
+    this.imageSrcName += 'NB';
+    this.setImage(this.direction, 0);
+    const l = this.imageSrcName.length;
+    this.imageSrcName = this.imageSrcName.slice(0, l-2);
+    // console.log(this.imageSrcName);
+    ctx.fillStyle = this.fontHealthColor;
+    ctx.font = this.fontHpLoss;
+    ctx.fillText('-' + hpLoss.toString(), this.x, this.y-this.size/2);
+    console.log()
   }
 }

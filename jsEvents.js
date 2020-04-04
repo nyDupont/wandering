@@ -116,11 +116,7 @@ window.addEventListener('click', ((evt) => {
 }));
 
 function movingMouse(evt) {
-  // console.log(e.clientX, e.clientY);
-  // ctx.fillStyle = '#ffffff'
-  // ctx.fillRect(evt.clientX, evt.clientY,
-  //              10, 10);
-  mainMire.setAngle(evt.clientX, evt.clientY);
+  hero.mire.setAngle(evt.clientX, evt.clientY);
 }
 
 function angleBetweenObj(bx, by, ax, ay) {

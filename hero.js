@@ -26,13 +26,17 @@ class Hero extends Belligerent {
     this.speed = this.walkSpeed;
     this.normalSize = 100;
     this.size = this.normalSize;
-    this.imageSrcName = 'fox';
-    this.setImage(this.direction, this.animatedImageIndex);
 
+    this.mire = new Mire(this);
     this.statBar = new StatBar(this, true);
 
     this.hitbox = new TargetHitbox(this, 0.75*this.size, 0.9*this.size);
     this.hitBoxDebug_fillStyleRGBa = 'rgba(0, 255, 0, 0.75)';
+
+    this.nbOfAnimatedImages = 4;
+    this.timeBetweenFrames = 100; // ms
+    this.imageSrcName = 'fox';
+    this.setImage(this.direction, this.animatedImageIndex);
 
     // abilities attributes
     this.swirlRange = 300;
@@ -43,13 +47,19 @@ class Hero extends Belligerent {
     this.lastSwirlTime.setSeconds(-this.swirlCD);
   }
 
-  update() {
+  update(date) {
     this.setPosition();
     this.hitbox.update();
     this.statBar.update();
+    this.mire.update();
     this.checkMap();
     this.statRecOverTime();
     this.draw();
+    if (this.isMoving && Math.abs(date.getMilliseconds()-this.lastFrameTime)
+                         > this.timeBetweenFrames) {
+      this.walkingAnimationUpdate();
+      this.lastFrameTime = date.getMilliseconds();
+    }
   }
 
   checkMap() {

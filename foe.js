@@ -16,7 +16,7 @@ class Foe extends Belligerent {
       // this.y = Math.random()*canvas.height;
       // this.x = Math.random()*canvas.width;
       this.y = canvas.height/2;
-      this.x = canvas.width/2;
+      this.x = canvas.width/8;
       this.direction = 'S';
       this.isMoving = false;
       // this.mapCoords = [0, 1];
@@ -31,22 +31,31 @@ class Foe extends Belligerent {
       this.seekRange = 300;
 
       this.statBar = new StatBar(this, false);
+      this.fontHealthColor = '#aa2010';
+      this.fontHpLoss = (0.3*this.size).toString() + 'px Arial';
 
       this.hitbox = new TargetHitbox(this, 0.75*this.size, 0.9*this.size);
       this.hitBoxDebug_fillStyleRGBa = 'rgba(0, 0, 255, 0.75)'
 
+      this.nbOfAnimatedImages = 4;
+      this.timeBetweenFrames = 100; // ms
       this.imageSrcName = 'fox';
       this.setImage(this.direction, this.animatedImageIndex);
 
     }
 
-    update() {
+    update(date) {
       this.seek();
       this.setPosition();
       this.hitbox.update();
       this.statBar.update();
       this.statRecOverTime();
       this.draw();
+      if (this.isMoving && Math.abs(date.getMilliseconds()-this.lastFrameTime)
+                           > this.timeBetweenFrames) {
+        this.walkingAnimationUpdate();
+        this.lastFrameTime = date.getMilliseconds();
+      }
     }
 
     seek() {

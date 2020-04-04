@@ -9,12 +9,15 @@ class Character {
     this.image = new Image();
     this.imageSrcName;
     this.animatedImageIndex = 0;
+    this.nbOfAnimatedImages;
+    this.timeBetweenFrames;
+    this.lastFrameTime = new Date().getMilliseconds();
     this.possibleDirection = ['E', 'SE', 'S', 'SW', 'W', 'NW', 'N', 'NE'];
     this.hitbox;
     this.hitBoxDebug = false;
   }
 
-  update() {
+  update(date) {
     this.hitbox.update();
     this.setPosition();
     this.draw();
@@ -112,10 +115,9 @@ class Character {
   }
 
   walkingAnimationUpdate() {
-    if (this.isMoving) {
-      this.animatedImageIndex = (this.animatedImageIndex+1)%4;
-      this.setImage(this.direction, this.animatedImageIndex);
-    }
+    this.animatedImageIndex = (this.animatedImageIndex+1)
+                              %this.nbOfAnimatedImages;
+    this.setImage(this.direction, this.animatedImageIndex);
   }
 
   setImage(direction, animatedImageIndex) {

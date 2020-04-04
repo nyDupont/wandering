@@ -20,7 +20,7 @@ class StatBar extends StateDisplayer {
     this.manaColor = '#1540aa'
     this.strokeColor = '#101010';
     // this.fillTextColor = '#FFFFFF';
-    this.font = this.height.toString() + ' Arial';
+    this.font = this.height.toString() + 'px Arial';
   }
 
   destruct() {
@@ -44,6 +44,7 @@ class StatBar extends StateDisplayer {
     ctx.strokeRect(this.x-this.width/2-1, this.y-1,
                    this.width+2, this.height+2);
     if (this.isMain) {
+      ctx.font = this.font;
       ctx.fillText(Math.round(this.owner.hp).toString() + '/' + this.owner.maxHp.toString(),
                    this.x-this.width/2, this.y-this.height/2);
     }
@@ -59,6 +60,7 @@ class StatBar extends StateDisplayer {
                      this.y-1+this.vSpaceBetweenBars,
                      this.width+2, this.height+2);
       if (this.isMain) {
+        ctx.font = this.font;
         ctx.fillText(Math.round(this.owner.mana).toString() + '/' + this.owner.maxMana.toString(),
                      this.x-this.width/2,
                      this.y+this.vSpaceBetweenBars+2.5*this.height);

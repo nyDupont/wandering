@@ -5,6 +5,7 @@ class Projectile {
     this.speed;
     this.size;
     this.damage;
+    this.knockBack;
     this.directionAngle;
     this.constructionTime = new Date();
     this.timeBeforeDestruction = 2; // seconds
@@ -22,15 +23,15 @@ class Projectile {
     this.hitbox.destruct();
   }
 
-  update() {
+  update(date) {
     this.hitbox.update();
-    const d1 = new Date();
     if (this.hitbox.collides()) {
       this.hitbox.hitTarget.loseHp(this.damage);
+      this.hitbox.hitTarget.knockBack(this.directionAngle, this.knockBack);
       this.destruct();
     }
 
-    if (Math.abs(d1.getSeconds() - this.constructionTime.getSeconds())
+    if (Math.abs(date.getSeconds() - this.constructionTime.getSeconds())
         > this.timeBeforeDestruction) {
       this.destruct();
       // console.log('popped');

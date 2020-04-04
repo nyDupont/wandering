@@ -8,6 +8,7 @@ function Map(i_max, j_max, i_init, j_init) {
   this.j = j_init;
   this.image = new Image();
   this.image.src = 'images/road_'+this.i.toString()+this.j.toString()+'.svg';
+  this.firstDraw = true;
 
   this.update = function() {
     this.draw();
