@@ -1,14 +1,18 @@
+const canvas = document.querySelector(".canvas");
+const ctx = canvas.getContext("2d");
 const refreshSpeed = 0;
 
-hero = new Hero();
-map = new Map(2, 2, hero.mapCoords[0], hero.mapCoords[1]);
-swirlStateDisplayer = new AbilityStateDisplayer('swirl', hero, 1);
+var listOfObjectsToUpdate = [];
 
-foe = new Foe();
+// map = new AbsoluteMap(2, 2, 0, 1);
+hero = new Hero();
+map = new RelativeMap(hero);
+// foe = new Foe();
+// swirlStateDisplayer = new AbilityStateDisplayer('swirlAbility', hero, 1);
 
 var integerUpdateState20milli = -20;
 
-var listOfObjectsToUpdate = [map, hero, swirlStateDisplayer, foe];
+// listOfObjectsToUpdate.push(swirlStateDisplayer);
 
 (function setup() {
   window.setInterval(() => {

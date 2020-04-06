@@ -10,11 +10,11 @@ window.addEventListener('keydown', ((evt) => {
   //   hero.sprintOn();
     }
   } else if (evt.key == ' ') {
-      if (!hero.isDashing) {
-        hero.swirl();
-      }
+        hero.swirl.swirl();
   } else if (evt.key == 'c') {
       hero.loseHp(5);
+  } else if (evt.key == 'o') {
+      foe = new Foe();
   }
 }));
 
@@ -111,8 +111,8 @@ function positionVariation(heldMvtKeysArray) {
 
 window.addEventListener('click', ((evt) => {
     mouseHeroAngle = angleBetweenObj(evt.clientX, evt.clientY, hero.x, hero.y)
-    shuriken = new ShurikenProjectile(hero, mouseHeroAngle);
-    listOfObjectsToUpdate.push(shuriken);
+    // shuriken = new ShurikenProjectile(hero, mouseHeroAngle);
+    hero.sendEnvelope(mouseHeroAngle);
 }));
 
 function movingMouse(evt) {
