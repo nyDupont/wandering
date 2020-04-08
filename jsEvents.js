@@ -13,6 +13,8 @@ window.addEventListener('keydown', ((evt) => {
         hero.swirl.swirl();
   } else if (evt.key == 'c') {
       hero.loseHp(5);
+  } else if (evt.key == 'p') {
+      pause();
   } else if (evt.key == 'o') {
       foe = new Foe();
   }
@@ -116,7 +118,7 @@ window.addEventListener('click', ((evt) => {
 }));
 
 function movingMouse(evt) {
-  hero.mire.setAngle(evt.clientX, evt.clientY);
+  // hero.mire.setAngle(evt.clientX, evt.clientY);
 }
 
 function angleBetweenObj(bx, by, ax, ay) {

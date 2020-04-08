@@ -1,16 +1,12 @@
 class Map {
   constructor() {
-    this.name;
-    this.image;
+    this.totalWidth = 2100;
+    this.totalHeight = 1400;
+    // this.setPosition();
 
-    listOfObjectsToUpdate.unshift(this);
-  }
-
-  update() {
-    this.draw();
-  }
-
-  draw() {
+    this.name = 'test';
+    this.image = new Image();
+    this.setImage();
   }
 
   setImage() {
