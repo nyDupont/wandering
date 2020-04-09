@@ -1,12 +1,9 @@
 class Character {
   constructor() {
-    this.x; // on canvas, where drawn on screen
-    this.y;
-    this.xCoord; // on map
+    this.xCoord; // on map (i.e. absolute)
     this.yCoord;
     this.size;
     this.speed;
-    this.positionNumericalPrecision = 100 // = 10^(nbOfDecimalsDesired)
     this.isMoving;
     this.direction;
     this.image = new Image();
@@ -17,35 +14,21 @@ class Character {
     this.lastFrameTime = new Date().getMilliseconds();
     this.possibleDirection = ['E', 'SE', 'S', 'SW', 'W', 'NW', 'N', 'NE'];
     this.hitbox;
-    this.hitBoxDebug = false;
+    // this.hitBoxDebug = false;
 
     listOfObjectsToUpdate.push(this);
+    listOfObjectsToDraw.push(this);
   }
 
   destruct() {
     this.hitbox.destruct();
     listOfObjectsToUpdate.splice(listOfObjectsToUpdate.indexOf(this), 1);
+    listOfObjectsToDraw.splice(listOfObjectsToUpdate.indexOf(this), 1);
   }
 
   update(date) {
     this.hitbox.update();
     this.setPosition();
-    this.draw();
-  }
-
-  draw() {
-    ctx.drawImage(this.image,
-                  Math.round(this.x-this.size/2),
-                  Math.round(this.y-this.size/2),
-                  Math.round(this.size), Math.round(this.size));
-    if (this.hitBoxDebug) {
-      ctx.fillStyle = this.hitBoxDebug_fillStyleRGBa;
-      ctx.fillRect(Math.round(this.x-0.75*this.size/2),
-                   Math.round(this.y-0.9*this.size/2),
-                   Math.round(0.75*this.size), Math.round(0.9*this.size));
-    }
-
-
   }
 
   setDirection(direction) {
@@ -69,10 +52,12 @@ class Character {
       // const ok2goE = map.j <= map.j_max && this.xCoord < canvas.width;
       // const ok2goW = map.j >= 0 && this.xCoord >= 0;
 
+      // conditions for the square relativeMap
       const ok2goN = this.yCoord > 0;
       const ok2goS = this.yCoord < map.totalHeight;
-      const ok2goE =  this.xCoord < map.totalWidth;
+      const ok2goE = this.xCoord < map.totalWidth;
       const ok2goW = this.xCoord > 0;
+
       switch(this.direction) {
         case 'N':
           if (ok2goN) {
@@ -127,8 +112,6 @@ class Character {
           };
           break;
       }
-      // console.log(this.xCoord, this.yCoord);
-      // console.log(this.x, this.y);
     }
   }
 

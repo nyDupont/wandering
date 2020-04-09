@@ -26,7 +26,7 @@ class Belligerent extends Character {
   update() {
     this.setPosition();
     this.statRecOverTime();
-    this.draw();
+    fov.draw(this);
   }
 
   death() {
@@ -78,9 +78,8 @@ class Belligerent extends Character {
   }
 
   knockBack(direction, amount) {
-    // console.log(direction, amount);
-    this.x += amount*Math.cos(direction);
-    this.y += amount*Math.sin(direction);
+    this.xCoord += amount*Math.cos(direction);
+    this.yCoord += amount*Math.sin(direction);
   }
 
   sprint(str) {

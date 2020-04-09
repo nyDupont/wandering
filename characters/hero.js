@@ -1,5 +1,5 @@
 class Hero extends Belligerent {
-  constructor() {
+  constructor(x, y) {
     super();
     // health
     this.maxHp = 50;
@@ -14,23 +14,20 @@ class Hero extends Belligerent {
     this.manaHealingSpeed = 0.1;
 
     // situational
-    this.x = canvas.width/2; // on canvas, where drawn on screen
-    this.y = canvas.height/2;
-    this.xCoord = 500; // on map
-    this.yCoord = 500;
+    this.xCoord = x; // on map
+    this.yCoord = y;
     this.direction = 'S';
     this.isMoving = false;
-    // this.mapCoords = [map.i, map.j];
 
     // physical
-    this.walkSpeed = 8;
+    this.walkSpeed = 7;
     this.runSpeed = 10;
     this.speed = this.walkSpeed;
     this.normalSize = 100;
     this.size = this.normalSize;
 
-    this.mire = new Mire(this);
-    this.statBar = new StatBar(this, true);
+    // this.mire = new Mire(this);
+    // this.statBar = new StatBar(this, true);
 
     this.hitbox = new TargetHitbox(this, 0.75*this.size, 0.9*this.size);
     this.hitBoxDebug_fillStyleRGBa = 'rgba(0, 255, 0, 0.75)';
@@ -39,26 +36,23 @@ class Hero extends Belligerent {
     this.timeBetweenFrames = 100; // ms
     this.imageSrcName = 'foxes/fox';
     this.setImage(this.direction, this.animatedImageIndex);
-
     // abilities
-    this.swirl = new Swirl(this);
-    this.abilities = [this.swirl];
+    // this.swirl = new Swirl(this);
+    // this.abilities = [this.swirl];
     this.envelopesBank = 10;
-
   }
 
   update(date) {
-    // console.log(this.xCoord);
     this.setPosition();
+    fov.update(date);
     this.hitbox.update();
-    this.statBar.update();
-    for (let ability of this.abilities) {
-      ability.update();
-    }
-    this.mire.update();
+    // this.statBar.update();
+    // for (let ability of this.abilities) {
+      // ability.update();
+    // }
+    // this.mire.update();
     // this.checkMap();
     this.statRecOverTime();
-    this.draw();
     if (this.isMoving && Math.abs(date.getMilliseconds()-this.lastFrameTime)
                          > this.timeBetweenFrames) {
       this.walkingAnimationUpdate();
