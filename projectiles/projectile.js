@@ -1,7 +1,8 @@
 class Projectile {
   constructor() {
-    this.x;
-    this.y;
+    this.owner; // whose projectile it is, not to shoot oneself;
+    this.xCoord;
+    this.yCoord;
     this.speed;
     this.size;
     this.damage;
@@ -13,15 +14,16 @@ class Projectile {
     this.image = new Image();
     this.imageSrcName;
 
-    this.owner; // whose projectile it is, not to shoot oneself;
     this.hitbox;
     this.hitBoxDebug = false;
 
     listOfObjectsToUpdate.push(this);
+    listOfObjectsToDraw.push(this);
   }
 
   destruct() {
     listOfObjectsToUpdate.splice(listOfObjectsToUpdate.indexOf(this), 1);
+    listOfObjectsToDraw.splice(listOfObjectsToDraw.indexOf(this), 1);
     this.hitbox.destruct();
   }
 
@@ -39,25 +41,17 @@ class Projectile {
       // console.log('popped');
     }
     this.setPosition();
-    this.draw();
   }
 
-  draw() {
-    ctx.drawImage(this.image,
-                  Math.round(this.x),
-                  Math.round(this.y),
-                  Math.round(this.size), Math.round(this.size));
-    if (this.hitBoxDebug) {
-      ctx.fillStyle = 'rgba(250, 0, 0, 0.5)';
-      ctx.fillRect(Math.round(this.x-0.1*this.size/2),
-                   Math.round(this.y-0.1*this.size/2),
-                   Math.round(this.size), Math.round(this.size));
-    }
-  }
+  // computeRelativeSpeed() { // removed as it should be done vectorially
+  //   if (this.owner.isMoving) {
+  //     this.speed += this.owner.speed;
+  //   }
+  // }
 
   setPosition() {
-    this.x += this.speed * Math.cos(this.directionAngle);
-    this.y += this.speed * Math.sin(this.directionAngle);
+    this.xCoord += this.speed * Math.cos(this.directionAngle);
+    this.yCoord += this.speed * Math.sin(this.directionAngle);
   }
 
   setImage() {

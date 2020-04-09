@@ -2,8 +2,8 @@ class ShurikenProjectile extends AnimatedProjectile {
   constructor(owner, directionAngle) {
     super();
     this.owner = owner;
-    this.x = this.owner.x;
-    this.y = this.owner.y;
+    this.xCoord = this.owner.xCoord;
+    this.yCoord = this.owner.yCoord;
     this.directionAngle = directionAngle;
 
     this.speed = 20;

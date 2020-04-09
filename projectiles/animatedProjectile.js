@@ -21,7 +21,6 @@ class AnimatedProjectile extends Projectile {
       // console.log('popped');
     }
     this.setPosition();
-    this.draw();
     if (Math.abs(date.getMilliseconds()-this.lastFrameTime) > this.timeBetweenFrames) {
       this.animationUpdate();
       this.lastFrameTime = date.getMilliseconds();
