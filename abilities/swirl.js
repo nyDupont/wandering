@@ -3,7 +3,7 @@ class Swirl extends Ability {
     super(owner);
     this.name = 'swirl';
 
-    this.range = 300;
+    this.range = 20;
     this.manaCost = 2;
     this.isDashing = false;
     this.cd = 2; // seconds
@@ -19,87 +19,93 @@ class Swirl extends Ability {
 
   swirl() {
     if (!this.isDashing && this.checkCD()) {
-      const notOk2swirlN = map.i == 0 && this.owner.y < this.range;
-      const notOk2swirlS = map.i == map.i_max && this.owner.y >= canvas.height-this.range;
-      const notOk2swirlE = map.j == map.j_max && this.owner.x >= canvas.width-this.range;
-      const notOk2swirlW = map.j == 0 && this.owner.x < this.range;
+      //
+      // const notOk2swirlN = map.i == 0 && this.owner.y < this.range;
+      // const notOk2swirlS = map.i == map.i_max && this.owner.y >= canvas.height-this.range;
+      // const notOk2swirlE = map.j == map.j_max && this.owner.x >= canvas.width-this.range;
+      // const notOk2swirlW = map.j == 0 && this.owner.x < this.range;
+
+      const notOk2swirlN = this.owner.yCoord < this.range;
+      const notOk2swirlS = this.owner.yCoord >= map.totalHeight-this.range;
+      const notOk2swirlE = this.owner.x >= map.totalWidth-this.range;
+      const notOk2swirlW = this.owner.x < this.range;
 
       if (this.owner.direction == 'N' && !notOk2swirlN) {
         // loseMana both test if hero has enought mana and if so makes him lose
         // the according amount.
           if (this.owner.loseMana(this.manaCost)) {
-            this.swirlAnimation(this.owner.y-this.range, this.owner.x);
+            this.swirlAnimation(this.owner.yCoord-this.range, this.owner.xCoord);
           }
       } else if (this.owner.direction == 'S' && !notOk2swirlS) {
           if (this.owner.loseMana(this.manaCost)) {
-          this.swirlAnimation(this.owner.y+this.range, this.owner.x);
+          this.swirlAnimation(this.owner.yCoord+this.range, this.owner.xCoord);
           }
       } else if (this.owner.direction == 'E' && !notOk2swirlE) {
           if (this.owner.loseMana(this.manaCost)) {
-            this.swirlAnimation(this.owner.y, this.owner.x+this.range);
+            this.swirlAnimation(this.owner.yCoord, this.owner.xCoord+this.range);
           }
       } else if (this.owner.direction == 'W' && !notOk2swirlW) {
           if (this.owner.loseMana(this.manaCost)) {
-            this.swirlAnimation(this.owner.y, this.owner.x-this.range);
+            this.swirlAnimation(this.owner.yCoord, this.owner.xCoord-this.range);
           }
       } else if (this.owner.direction == 'SE') {
           if (!notOk2swirlS && !notOk2swirlE) {
             if (this.owner.loseMana(this.manaCost)) {
-              this.swirlAnimation(this.owner.y+this.range/Math.sqrt(2),
-                                 this.owner.x+this.range/Math.sqrt(2));
+              this.swirlAnimation(this.owner.yCoord+this.range/Math.sqrt(2),
+                                 this.owner.xCoord+this.range/Math.sqrt(2));
             }
           } else if (!notOk2swirlS) {
             if (this.owner.loseMana(this.manaCost)) {
-              this.swirlAnimation(this.owner.y+this.range/Math.sqrt(2), this.owner.x);
+              this.swirlAnimation(this.owner.yCoord+this.range/Math.sqrt(2), this.owner.xCoord);
             }
           } else if (!notOk2swirlE) {
             if (this.owner.loseMana(this.manaCost)) {
-              this.swirlAnimation(this.owner.y, this.owner.x+this.range/Math.sqrt(2));
+              this.swirlAnimation(this.owner.yCoord, this.owner.xCoord+this.range/Math.sqrt(2));
             }
           }
       } else if (this.owner.direction == 'SW') {
           if (!notOk2swirlS && !notOk2swirlW) {
             if (this.owner.loseMana(this.manaCost)) {
-              this.swirlAnimation(this.owner.y+this.range/Math.sqrt(2),
-                                 this.owner.x-this.range/Math.sqrt(2));
+              this.swirlAnimation(this.owner.yCoord+this.range/Math.sqrt(2),
+                                 this.owner.xCoord-this.range/Math.sqrt(2));
             }
           } else if (!notOk2swirlS) {
             if (this.owner.loseMana(this.manaCost)) {
-              this.swirlAnimation(this.owner.y+this.range/Math.sqrt(2), this.owner.x);
+              this.swirlAnimation(this.owner.yCoord+this.range/Math.sqrt(2), this.owner.xCoord);
             }
           } else if (!notOk2swirlW) {
             if (this.owner.loseMana(this.manaCost)) {
-              this.swirlAnimation(this.owner.y, this.owner.x-this.range/Math.sqrt(2));
+              this.swirlAnimation(this.owner.yCoord, this.owner.xCoord-this.range/Math.sqrt(2));
             }
           }
       } else if (this.owner.direction == 'NE') {
           if (!notOk2swirlN && !notOk2swirlE) {
             if (this.owner.loseMana(this.manaCost)) {
-              this.swirlAnimation(this.owner.y-this.range/Math.sqrt(2),
-                                 this.owner.x+this.range/Math.sqrt(2));
+              this.swirlAnimation(this.owner.yCoord-this.range/Math.sqrt(2),
+                                 this.owner.xCoord+this.range/Math.sqrt(2));
             }
           } else if (!notOk2swirlN) {
             if (this.owner.loseMana(this.manaCost)) {
-              this.swirlAnimation(this.owner.y-this.range/Math.sqrt(2), this.owner.x);
+              this.swirlAnimation(this.owner.yCoord-this.range/Math.sqrt(2), this.owner.xCoord);
             }
           } else if (!notOk2swirlE) {
             if (this.owner.loseMana(this.manaCost)) {
-              this.swirlAnimation(this.owner.y, this.owner.x+this.range/Math.sqrt(2));
+              this.swirlAnimation(this.owner.yCoord, this.owner.xCoord+this.range/Math.sqrt(2));
             }
           }
       } else if (this.owner.direction == 'NW') {
           if (!notOk2swirlN && !notOk2swirlW) {
             if (this.owner.loseMana(this.manaCost)) {
-              this.swirlAnimation(this.owner.y-this.range/Math.sqrt(2),
-                                 this.owner.x-this.range/Math.sqrt(2));
+              this.swirlAnimation(this.owner.yCoord-this.range/Math.sqrt(2),
+                                 this.owner.xCoord-this.range/Math.sqrt(2));
             }
           } else if (!notOk2swirlN) {
             if (this.owner.loseMana(this.manaCost)) {
-              this.swirlAnimation(this.owner.y-this.range/Math.sqrt(2), this.owner.x);
+              this.swirlAnimation(this.owner.yCoord-this.range/Math.sqrt(2), this.owner.xCoord);
             }
           } else if (!notOk2swirlW) {
             if (this.owner.loseMana(this.manaCost)) {
-              this.swirlAnimation(this.owner.y, this.owner.x-this.range/Math.sqrt(2));
+              this.swirlAnimation(this.owner.yCoord, this.owner.xCoord-this.range/Math.sqrt(2));
             }
           }
         }
@@ -113,8 +119,8 @@ class Swirl extends Ability {
       for (var i=0; i<this.nbOfFrames; i++) {
         // console.log(i);
         if (i == Math.round(this.nbOfFrames/2)) {
-          this.owner.x = newX;
-          this.owner.y = newY;
+          this.owner.xCoord = newX;
+          this.owner.yCoord = newY;
         }
         this.owner.size = 2*this.owner.normalSize*Math.abs(i-this.nbOfFrames/2)
                      /this.nbOfFrames;
