@@ -9,14 +9,14 @@ window.addEventListener('keydown', ((evt) => {
   // } else if (evt.key == 'm' && hero.speed != hero.sprintSpeed) {
   //   hero.sprintOn();
     }
-  } else if (evt.key == ' ') {
-        hero.swirl.swirl();
+  // } else if (evt.key == ' ') {
+  //       hero.swirl.swirl();
   } else if (evt.key == 'c') {
       hero.loseHp(5);
-  } else if (evt.key == 'p') {
-      pause();
   } else if (evt.key == 'o') {
-      foe = new Foe();
+      book = new FoeBook();
+  } else if (evt.key == 'e') {
+        hero.envelopesBank += 20;
   }
 }));
 
@@ -112,8 +112,10 @@ function positionVariation(heldMvtKeysArray) {
 };
 
 window.addEventListener('click', ((evt) => {
-    mouseHeroAngle = angleBetweenObj(evt.clientX, evt.clientY, hero.x, hero.y)
-    // shuriken = new ShurikenProjectile(hero, mouseHeroAngle);
+  mouseHeroAngle = angleBetweenObj(fov.xCoord - fov.width/2 + evt.clientX,
+                                   fov.yCoord - fov.height/2 + evt.clientY,
+                                   hero.xCoord, hero.yCoord);
+  // shuriken = new ShurikenProjectile(hero, mouseHeroAngle);
     hero.sendEnvelope(mouseHeroAngle);
 }));
 

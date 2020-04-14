@@ -1,54 +1,23 @@
 class Foe extends Belligerent {
   constructor() {
     super();
-    this.maxHp = 20;
-    this.hp = this.maxHp;
-    this.timeBeforeHpHealing = 5; // seconds
-    this.hpHealingSpeed = 0.1;
-
-    // mana
-    this.maxMana = 0;
-    this.mana = this.maxMana;
-    this.timeBeforeManaHealing = 3; // seconds
-    this.manaHealingSpeed = 0.1;
-
-    // situational
-    this.randomlyPlace(hero, 400);
-    this.direction = 'S';
-    this.isMoving = false;
-
-    // physical
-    this.walkSpeed = 2;
-    this.speed = this.walkSpeed;
-    this.runSpeed = 3;
-    this.normalSize = 100;
-    this.size = this.normalSize;
-    this.attackRange = 0.75*this.normalSize;
-    this.seekRange = 300;
-
     // this.statBar = new StatBar(this, false);
-
-    this.hitbox = new TargetHitbox(this, 0.75*this.size, 0.9*this.size);
     this.hitBoxDebug_fillStyleRGBa = 'rgba(0, 0, 255, 0.75)'
 
-    this.nbOfAnimatedImages = 4;
-    this.timeBetweenFrames = 100; // ms
-    this.imageSrcName = 'foxes/fox';
-    this.setImage(this.direction, this.animatedImageIndex);
-
+    this.walkingDustEffect = new WalkingDustEffect(this);
   }
 
   update(date) {
     this.seek();
     this.setPosition();
-    this.hitbox.update();
+    // this.hitbox.update();
     // this.statBar.update();
     this.statRecOverTime();
-    fov.draw(this);
-    if (this.isMoving && Math.abs(date.getMilliseconds()-this.lastFrameTime)
-                         > this.timeBetweenFrames) {
-      this.walkingAnimationUpdate();
-      this.lastFrameTime = date.getMilliseconds();
+    this.animationUpdate(date);
+    fov.clipDraw(this, this.animatedImageIndex*this.spriteWidth, 0,
+                 this.spriteWidth, this.spriteHeight);
+    if (this.isMoving) {
+      this.walkingDustEffect.update(date);
     }
   }
 
@@ -99,5 +68,12 @@ class Foe extends Belligerent {
     } else {
       this.isMoving = false;
     }
+  }
+
+  setImage() {
+    // this.image.src = 'images/' + this.imageSrcName + '_' + this.animationSate
+    //                  + '_' + direction[direction.length-1] + '.svg';
+    this.image.src = 'images/characters/foes/' + this.imageSrcName + '_' + this.animationState
+                     + '_SW.svg';
   }
 }

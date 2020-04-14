@@ -23,19 +23,23 @@ class Belligerent extends Character {
     this.fontHpLoss = (0.3*this.size).toString() + 'px Arial';
   }
 
-  update() {
+  update(date) {
     this.setPosition();
     this.statRecOverTime();
     fov.draw(this);
+    if (this.isMoving) {
+      this.walkingDustEffect.update(date);
+    }
   }
 
   death() {
     this.destruct();
+    this.statBar.destruct();
   }
 
   loseHp(hpLoss) {
     this.lastHpLossTime = new Date();
-    this.loseHpAnimation(hpLoss);
+    // this.loseHpAnimation(hpLoss);
     if (this.hp <= hpLoss) {
       this.hp = 0;
       this.death();

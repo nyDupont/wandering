@@ -4,31 +4,35 @@ class Character {
     this.yCoord;
     this.size;
     this.speed;
-    this.isMoving;
+    this.isMoving; // boolean telling if coords must changed by speed or not
+    this.animationState; // string telling what sprites to load (walk, run, etc)
     this.direction;
+    this.isMoving = false;
+    this.animationState = 'resting';
     this.image = new Image();
     this.imageSrcName;
     this.animatedImageIndex = 0;
     this.nbOfAnimatedImages;
     this.timeBetweenFrames;
+    this.spriteWidth;
+    this.spriteHeight;
     this.lastFrameTime = new Date().getMilliseconds();
     this.possibleDirection = ['E', 'SE', 'S', 'SW', 'W', 'NW', 'N', 'NE'];
     this.hitbox;
     // this.hitBoxDebug = false;
 
     listOfObjectsToUpdate.push(this);
-    listOfObjectsToDraw.push(this);
   }
 
   destruct() {
     this.hitbox.destruct();
     listOfObjectsToUpdate.splice(listOfObjectsToUpdate.indexOf(this), 1);
-    listOfObjectsToDraw.splice(listOfObjectsToUpdate.indexOf(this), 1);
   }
 
   update(date) {
     this.hitbox.update();
     this.setPosition();
+    fov.draw(this);
   }
 
   setDirection(direction) {
@@ -39,8 +43,12 @@ class Character {
   setMotionState(state) {
     if (state == 'moving') {
       this.isMoving = true;
+      this.animationState = 'walking';
+      this.setImage();
     } else {
       this.isMoving = false;
+      this.animationState = 'resting';
+      this.setImage();
     }
   }
 
@@ -115,15 +123,20 @@ class Character {
     }
   }
 
-  walkingAnimationUpdate() {
-    this.animatedImageIndex = (this.animatedImageIndex+1)
-                              %this.nbOfAnimatedImages;
-    this.setImage(this.direction, this.animatedImageIndex);
+  animationUpdate(date) {
+    const d = date.getSeconds()*1000 + date.getMilliseconds();
+    if (Math.abs(d-this.lastFrameTime)
+                         > this.timeBetweenFrames) {
+      this.animatedImageIndex = (this.animatedImageIndex+1)
+                                %this.nbOfAnimatedImages;
+      this.lastFrameTime = d;
+    }
   }
 
-  setImage(direction, animatedImageIndex) {
-    this.image.src = 'images/' + this.imageSrcName + '_'
-                     + direction[direction.length-1] + '_'
-                     + animatedImageIndex.toString() + '.svg';
+  setImage() {
+    // this.image.src = 'images/' + this.imageSrcName + '_' + this.animationSate
+    //                  + '_' + direction[direction.length-1] + '.svg';
+    this.image.src = 'images/characters/' + this.imageSrcName + '_' + this.animationState
+                     + '_S.svg';
   }
 }

@@ -17,35 +17,41 @@ class Hero extends Belligerent {
     this.xCoord = x; // on map
     this.yCoord = y;
     this.direction = 'S';
-    this.isMoving = false;
 
     // physical
-    this.walkSpeed = 7;
-    this.runSpeed = 10;
+    this.walkSpeed = 8;
+    this.runSpeed = 12;
     this.speed = this.walkSpeed;
-    this.normalSize = 100;
+    this.normalSize = 120;
     this.size = this.normalSize;
 
     // this.mire = new Mire(this);
-    // this.statBar = new StatBar(this, true);
+    this.statBar = new StatBar(this, true);
 
     this.hitbox = new TargetHitbox(this, 0.75*this.size, 0.9*this.size);
     this.hitBoxDebug_fillStyleRGBa = 'rgba(0, 255, 0, 0.75)';
 
-    this.nbOfAnimatedImages = 4;
-    this.timeBetweenFrames = 100; // ms
-    this.imageSrcName = 'foxes/fox';
-    this.setImage(this.direction, this.animatedImageIndex);
+    this.nbOfAnimatedImages = 8;
+    // this.timeBetweenFrames = 3*this.size/this.speed; // ms
+    this.timeBetweenFrames = 75;
+    this.spriteWidth = 280;
+    this.spriteHeight = 360;
+    // this.imageSrcName = 'foxes/fox';
+    this.imageSrcName = 'ducks/mailmanDuck'
+    // this.setImage(this.direction, this.animatedImageIndex);
+    this.setImage();
     // abilities
     // this.swirl = new Swirl(this);
     // this.abilities = [this.swirl];
     this.envelopesBank = 10;
+
+    // this.walkingDustEffect = new WalkingDustEffect(this);
   }
 
   update(date) {
     this.setPosition();
-    fov.update(date);
     this.hitbox.update();
+    fov.update(date);
     // this.statBar.update();
     // for (let ability of this.abilities) {
       // ability.update();
@@ -53,11 +59,16 @@ class Hero extends Belligerent {
     // this.mire.update();
     // this.checkMap();
     this.statRecOverTime();
-    if (this.isMoving && Math.abs(date.getMilliseconds()-this.lastFrameTime)
-                         > this.timeBetweenFrames) {
-      this.walkingAnimationUpdate();
-      this.lastFrameTime = date.getMilliseconds();
-    }
+    // this.walkingAnimationUpdate(date);
+    this.animationUpdate(date);
+    // fov.clipDraw(this, this.spriteWidth*this.animatedImageIndex, 0,
+    //              this.spriteWidth, this.spriteHeight);
+
+    // if (this.isMoving) {
+    //   this.walkingDustEffect.update(date);
+    // }
+    fov.clipDraw(this, this.animatedImageIndex*this.spriteWidth, 0,
+                 this.spriteWidth, this.spriteHeight);
   }
 
   checkAbsoluteMap() {
