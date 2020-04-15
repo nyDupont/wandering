@@ -18,7 +18,7 @@ class FoeBook extends Foe {
     this.walkSpeed = 2;
     this.speed = this.walkSpeed;
     this.runSpeed = 3;
-    this.normalSize = 50;
+    this.normalSize = 100;
     this.size = this.normalSize;
     this.attackRange = 0.75*this.normalSize;
     this.seekRange = 300;

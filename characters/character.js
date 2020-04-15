@@ -134,9 +134,12 @@ class Character {
   }
 
   setImage() {
+    console.log('images/characters/' + this.imageSrcName + '_'
+                + this.animationState + '_' + this.direction[this.direction.length-1] + '.svg');
     // this.image.src = 'images/' + this.imageSrcName + '_' + this.animationSate
     //                  + '_' + direction[direction.length-1] + '.svg';
-    this.image.src = 'images/characters/' + this.imageSrcName + '_' + this.animationState
-                     + '_S.svg';
+    this.image.src = 'images/characters/' + this.imageSrcName + '_'
+                + this.animationState + '_'
+                + this.direction[this.direction.length-1] + '.svg';
   }
 }
